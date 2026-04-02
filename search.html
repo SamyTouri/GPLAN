@@ -223,8 +223,12 @@
     async function search() {
       const plantName = document.getElementById('plant_name').value.trim();
       if (!plantName) { document.getElementById('plant_name').focus(); return; }
-      // Permettre recherche libre (pas juste autocomplete)
-      // Si selection autocomplete, utiliser le nom exact; sinon recherche par prefixe
+      if (!selectedPlant || selectedPlant !== plantName) {
+        plantInput.style.borderColor = '#dc2626';
+        plantInput.setAttribute('placeholder', 'Selectionnez un nom dans la liste');
+        plantInput.focus();
+        return;
+      }
 
       const size = document.getElementById('size').value.trim();
       const quantity = document.getElementById('quantity').value;
