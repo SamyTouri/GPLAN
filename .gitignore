@@ -1,0 +1,14 @@
+# Data files (import batches, temp)
+*.json
+suppliers_to_geocode.json
+plants_gplants*.json
+suppliers_gplants.json
+*_batch_*.json
+
+# Scripts temporaires
+create_extraction_workflow.py
+geocode_batch.py
+create_column_mappings.sql
+
+# Claude internal
+.claude/
