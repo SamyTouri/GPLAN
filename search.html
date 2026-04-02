@@ -223,11 +223,15 @@
     async function search() {
       const plantName = document.getElementById('plant_name').value.trim();
       if (!plantName) { document.getElementById('plant_name').focus(); return; }
+      // Si pas de selection autocomplete, verifier que le texte est un debut de nom valide (min 5 chars)
       if (!selectedPlant || selectedPlant !== plantName) {
-        plantInput.style.borderColor = '#dc2626';
-        plantInput.setAttribute('placeholder', 'Selectionnez un nom dans la liste');
-        plantInput.focus();
-        return;
+        if (plantName.length < 5) {
+          plantInput.style.borderColor = '#dc2626';
+          plantInput.setAttribute('placeholder', 'Tapez au moins 5 caracteres ou selectionnez dans la liste');
+          plantInput.focus();
+          return;
+        }
+        // Accepter la recherche par prefixe (sans selection autocomplete)
       }
 
       const size = document.getElementById('size').value.trim();
