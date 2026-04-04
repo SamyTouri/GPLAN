@@ -279,7 +279,19 @@
             html += '<td><strong>' + esc(r.supplier_name) + '</strong></td>';
             html += '<td>' + esc(r.plant_name) + (r.botanical_name ? '<br><span class="botanical">' + esc(r.botanical_name) + '</span>' : '') + '</td>';
             html += '<td>' + esc(r.size || '-') + '</td>';
-            html += '<td class="price">' + (r.price !== null ? r.price.toFixed(2) + ' ' + (r.currency || 'EUR') : '-') + '</td>';
+            // Prix: fourchette si min != max
+            let priceDisplay = '-';
+            if (r.price !== null) {
+              const pMin = r.price;
+              const pMax = (r.extra_data && r.extra_data.price_max) ? r.extra_data.price_max : pMin;
+              const cur = r.currency || 'EUR';
+              if (pMax > pMin) {
+                priceDisplay = pMin.toFixed(2) + ' - ' + pMax.toFixed(2) + ' ' + cur;
+              } else {
+                priceDisplay = pMin.toFixed(2) + ' ' + cur;
+              }
+            }
+            html += '<td class="price">' + priceDisplay + '</td>';
             html += '<td>' + (r.availability !== null ? r.availability + ' pcs' : '-') + '</td>';
             html += '<td><span class="badge ' + badgeClass + '">' + esc(r.match_score || 'partiel') + '</span></td>';
             html += '</tr>';
