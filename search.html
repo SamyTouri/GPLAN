@@ -65,6 +65,12 @@
     .empty { text-align: center; padding: 40px; color: #aaa; }
     .empty p { font-size: 15px; }
 
+    .size-cell { max-width: 350px; }
+    .size-collapsed { max-height: 60px; overflow: hidden; position: relative; }
+    .size-collapsed::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 24px; background: linear-gradient(transparent, white); pointer-events: none; }
+    .size-toggle { display: inline-block; margin-top: 4px; font-size: 12px; color: #2d5a27; cursor: pointer; font-weight: 500; }
+    .size-toggle:hover { text-decoration: underline; }
+
     .error { background: #fee2e2; color: #991b1b; padding: 12px 16px; border-radius: 8px; font-size: 14px; }
 
     .info-bar { display: flex; gap: 20px; font-size: 12px; color: #888; margin-top: 8px; }
@@ -278,7 +284,14 @@
             html += '<tr>';
             html += '<td><strong>' + esc(r.supplier_name) + '</strong></td>';
             html += '<td>' + esc(r.plant_name) + (r.botanical_name ? '<br><span class="botanical">' + esc(r.botanical_name) + '</span>' : '') + '</td>';
-            html += '<td>' + esc(r.size || '-') + '</td>';
+            // Taille: collapsible si trop long
+            const sizeText = esc(r.size || '-');
+            if (sizeText.length > 100) {
+              const sizeId = 'size-' + Math.random().toString(36).substr(2, 6);
+              html += '<td class="size-cell"><div id="' + sizeId + '" class="size-collapsed">' + sizeText + '</div><span class="size-toggle" onclick="toggleSize(\'' + sizeId + '\', this)">Voir tout ▼</span></td>';
+            } else {
+              html += '<td class="size-cell">' + sizeText + '</td>';
+            }
             // Prix: fourchette si min != max
             let priceDisplay = '-';
             if (r.price !== null) {
@@ -305,6 +318,17 @@
       } finally {
         btn.disabled = false;
         btn.textContent = 'Rechercher';
+      }
+    }
+
+    function toggleSize(id, btn) {
+      const el = document.getElementById(id);
+      if (el.classList.contains('size-collapsed')) {
+        el.classList.remove('size-collapsed');
+        btn.textContent = 'Voir moins ▲';
+      } else {
+        el.classList.add('size-collapsed');
+        btn.textContent = 'Voir tout ▼';
       }
     }
 
